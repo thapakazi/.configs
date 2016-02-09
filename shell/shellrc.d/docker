@@ -13,8 +13,9 @@ function dlo {
             args+="$data"
         done
         docker logs $args
+        return
     fi
-    docker logs
+    docker logs $@
 }
 
 function docker_mk {
