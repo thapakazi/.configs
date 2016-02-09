@@ -1,6 +1,23 @@
 #!/bin/bash
 
-function mk_docker {
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias dimg='docker images'
+
+alias dl='docker ps -lq'
+alias dll='docker ps -l'
+
+function dlo {
+    if [[ -t 1 ]]; then
+        while read data; do
+            args+="$data"
+        done
+        docker logs $args
+    fi
+    docker logs
+}
+
+function docker_mk {
     # http://ebalaskas.gr/wiki/archlinux/installation_for_docker
     [ "$USER" != "root" ] && {
         echo -e "Superuser Privileges Requried!"
