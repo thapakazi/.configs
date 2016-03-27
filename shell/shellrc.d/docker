@@ -1,9 +1,5 @@
 #!/bin/bash
 
-alias dl='docker ps -lq'
-alias dll='docker ps -l'
-alias docker-clean-exited-containers='docker ps -aqf status=exited | xargs -n1 docker rm'
-
 function dimg {
     docker images $@ |
         sed "s/  \+/;/g" |
@@ -11,11 +7,12 @@ function dimg {
         sed "1s/.*/\x1B[1m&\x1B[m/"
 }
 
-function dps {
-    docker ps -a $@ |
+function docker_fit {
+    # docker fit output
+    docker $@ |
     sed '
         1s/ *NAMES$//g;
-        s/ *[a-z]\+_[a-z]\+//g;
+        s/ *[a-z]\+_[a-z]\+$//g;
         s/"\(.*\)"/\1/g;
         s/ seconds/s/g;
         s/ minutes/m/g;
@@ -51,30 +48,7 @@ function dlo {
     docker logs $@
 }
 
-function docker-make-arch-image {
-    # http://ebalaskas.gr/wiki/archlinux/installation_for_docker
-    path_img="/tmp/archlinux"
-    rm -rf $path_img
-
-    # basic installation
-    mkdir -pv $path_img/var/lib/pacman
-    sudo pacman --root $path_img -Sy base --noconfirm
-    sed -i '0,/#.*Server/s/#//' $path_img/etc/pacman.d/mirrorlist
-    sed -i 's/^SigLevel.*/SigLevel = Never/g' $path_img/etc/pacman.conf
-
-    # clean up
-    pacman -Rncs linux --root $path_img --noconfirm
-    pacman -Rncs man-db --root $path_img --noconfirm
-    pacman -Rncs man-pages --root $path_img --noconfirm
-    rm -rf $path_img/usr/share/locale
-    rm -rf $path_img/usr/share/man
-
-    # make tar
-    cd $path_img
-    tar Jcf image .
-    du -h image
-    cd -
-
-    # message
-    echo "docker import - arch_$(date +%b%d | tr '[A-Z]' '[a-z]'):local < $path_img/image"
-}
+alias dl='docker ps -lq'
+alias dll='docker_fit ps -l'
+alias dps='docker_fit ps -a'
+alias docker-clean-exited-containers='docker ps -aqf status=exited | xargs -n1 docker rm'
