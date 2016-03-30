@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #
-# stuff releated to archlinux
-#
+## application releated to archlinux
+
 
 function yaourt-from-aur-makepkg {
     cd /tmp
@@ -20,6 +20,7 @@ function yaourt-from-aur-makepkg {
     sudo pacman -U yaourt*pkg.tar.xz
 }
 
+
 function outsource-pkg-download {
     pacman -Sup | grep http > /tmp/pkglst
     scp /tmp/pkglst $1:$2
@@ -31,8 +32,25 @@ function outsource-pkg-download {
     mosh bone tmux a
 }
 
+
 function rsync-pkg-cache {
     pacman -Sup | grep http | xargs -n1 basename  > /tmp/pkglst
     wc -l /tmp/pkglst
     sudo rsync -r --append --progress --files-from=/tmp/pkglst $1:$2 /var/cache/pacman/pkg
+}
+
+
+function build-arch-iso-and-share {
+    >\dev\null pacman -Qs archiso || {
+        >&2 echo -e "\x1b[1marchiso\x1b[m not installed"
+        >&2 echo -e "    # pacman -S archiso"
+        return
+    }
+    ARCHLIVE=$(mktemp -d ${TMPDIR:-/tmp}/archlive-XXXXX)
+    mkdir -p $ARCHLIVE/out
+    cp -r /usr/share/archiso/configs/baseline/* $ARCHLIVE
+    cd $ARCHLIVE
+    sudo ./build.sh -v
+    echo "New archlinux iso created at"
+    echo -e "    $ARCHLIVE/out/*"
 }
