@@ -113,11 +113,13 @@ function nemo {
 }
 
 
-function ssh {
+function ssh-sftp-wrapper {
     ##
-    ### ssh wrapper for smart behaviour
+    ### ssh wrapper for smart behaviou
+    command=$1
+    shift
     if [[ $# -eq 0 ]]; then
-        /usr/bin/ssh # "ssh" is function, will cause recursion
+        /usr/bin/$command # "ssh" is function, will cause recursion
         return
     fi
 
@@ -138,10 +140,13 @@ function ssh {
     if [[ $reply == "y" || $reply == "Y" || $reply == "" ]]; then
         local v=$(sed -n 's/.*known_hosts:\([0-9]*\).*/\1/p' /tmp/ssh_key_error)
         sed -i "${v}d" $HOME/.ssh/known_hosts
-        /usr/bin/ssh $*
+        /usr/bin/$command $*
         return $?
     fi
 }
+
+alias ssh="ssh-sftp-wrapper ssh "
+alias sftp="ssh-sftp-wrapper sftp "
 
 
 function tmux {
@@ -153,4 +158,11 @@ function tmux {
 
     # TODO: handel attach if its sent
     /usr/bin/tmux a $@
+}
+
+function bluetooth-turn-it-on {
+    sudo modprobe btusb
+    sudo modprobe bluetooth
+    sudo systemctl start bluetooth.service
+    setsid blueman-manager
 }
