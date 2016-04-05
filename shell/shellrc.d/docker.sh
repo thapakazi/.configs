@@ -9,6 +9,7 @@ function dimg {
 
 function docker_fit {
     # docker fit output
+    tput rmam
     docker $@ |
     sed '
         1s/ *NAMES$//g;
@@ -25,6 +26,7 @@ function docker_fit {
     sed "s/  \+/;/g" |
     column -s\; -t |
     sed "1s/.*/\x1B[1m&\x1B[m/"
+    tput smam
 }
 
 function dlc {
