@@ -4,7 +4,7 @@
 ## application releated to archlinux
 
 
-function yaourt-from-aur-makepkg {
+function arch-yaourt-from-aur-makepkg {
     sudo pacman -S yajl
     cd /tmp
     wget -c https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
@@ -22,9 +22,9 @@ function yaourt-from-aur-makepkg {
 }
 
 
-function outsource-pkg-download {
+function arch-outsource-pkg-download {
     ## eg.
-    # $ outsource-pkg-download user@ip ~/Download/
+    # $ arch-outsource-pkg-download user@ip ~/Download/
     pacman -Sup | grep http > /tmp/pkglst
     scp /tmp/pkglst $1:$2
     ssh $1:$2 tmux send-keys "mkdir\ \-p\ $2/pkg/" Enter
@@ -35,9 +35,9 @@ function outsource-pkg-download {
 }
 
 
-function rsync-pkg-cache {
+function arch-rsync-pkg-cache {
     ## eg.
-    # $ rsync-pkg-cache user@ip /var/cache/pacman/pkg/
+    # $ arch-rsync-pkg-cache user@ip /var/cache/pacman/pkg/
 
     pacman -Sup | grep http | xargs -n1 basename  > /tmp/pkglst
     wc -l /tmp/pkglst
@@ -45,7 +45,7 @@ function rsync-pkg-cache {
 }
 
 
-function build-arch-iso {
+function arch-build-iso {
     # first argument take old archlive directory
     ## eg.
     # $ build-arch-iso /explicitly/give/path/to/build
@@ -64,4 +64,12 @@ function build-arch-iso {
     cp -r /usr/share/archiso/configs/baseline/* $ARCHLIVE
     cd $ARCHLIVE
     sudo ./build.sh -v
+}
+
+alias arch-build-docker-image="~/docker/builder/build-local-image"
+
+function arch-build-docker-image-from-official-mkimage {
+    cd ~/docker/builder/
+    cp /etc/pacman.conf ./mkimage-arch-pacman.conf
+    LC_ALL=C sudo ./mkimage-arch.sh
 }
