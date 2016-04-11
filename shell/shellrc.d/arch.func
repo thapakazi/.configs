@@ -71,3 +71,16 @@ function arch-build-docker-image {
     # cp /etc/pacman.conf ./mkimage-arch-pacman.conf
     sudo ./mkimage-arch.sh
 }
+
+function arch-mirrorlist-update-with-reflector {
+    cd /etc/pacman.d/
+    [ -f mirrorlist.pacnew ] || {
+        echo '"mirrorlist.pacnew" not found'
+        return
+    }
+    sudo mv mirrorlist mirrorlist.bak
+    sudo cp mirrorlist.pacnew mirrorlist
+    sudo cp mirrorlist mirrorlist.raw
+    sudo reflector --verbose -l 25 -p http --sort rate --save /etc/pacman.d/mirrorlist
+    cd -
+}
