@@ -1,0 +1,45 @@
+#+TITLE: udev rules
+
+*udev rules*, know what you are doing before copying it to
+=/etc/udev/rules.d=.
+
+| file                       | description                        | compatible |
+|----------------------------+------------------------------------+------------|
+| =01-touchpad.rules=        | Smart disable touchpad             | ✗          |
+| =90-hide-partitions.rules= | Hide "partition" from File Browser | ✗          |
+
+* Reload Rule
+
+  *udev* can be reloaded +with+ without restart.
+
+  #+BEGIN_SRC bash
+    # udevadm control --reload-rules
+  #+END_SRC
+
+* Auto disable touchpad
+
+  Auto disable touchpad when external pointing device is attached.
+
+  In =01-touchpad.rules= change the =/home/rho= to =/home/<your user
+  name>=
+
+* Hide "partitions" from File Browser
+
+  Create the file such as =/etc/udev/rules.d/99-hide-disks.rules=,
+  although any file name will work.
+
+  The general format is:
+
+  #+begin_verse
+    KERNEL=="device name", ENV{UDISKS_PRESENTATION_HIDE}="1"
+
+    # i.e.
+    KERNEL=="sda1", ENV{UDISKS_PRESENTATION_HIDE}="1"
+  #+end_verse
+
+
+* enable mpt devices
+
+  #+BEGIN_SRC bash
+    cp 51-android.rules /etc/udev/rules.d/51-android.rules
+  #+END_SRC

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PKG_NAME=(gmrun   mg python   X       xle   xscreensaver yaourt   zsh)
+_RC_FILE=(gmrunrc mg pythonrc xinitrc xlerc xscreensaver yaourtrc zshrc)
+
+echo "Checking: dependencies"
+for ((i=${#PKG_NAME}; i > 0 ; i--)); do
+    item="${PKG_NAME[i]}"
+    2> /dev/null type $item || echo -e "\t $item not found"
+    echo ${_RC_FILE[i]} >> conf.new
+done | column -t | sed 's/^/\t/'
+
+if [[ -e conf.new ]]; then
+    rm -f conf
+    mv conf.new conf
+fi

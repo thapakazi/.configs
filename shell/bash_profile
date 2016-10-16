@@ -2,9 +2,11 @@
 # profile file to autorun X
 # used by bash and zsh
 
-list=`pgrep -U $USER X`
-if [[ "$list" == "" ]] && [[ "$XDG_VTNR" == "1" ]]; then
-    startx > ~/.xlog
-#elif [[ -f ~/.bashrc ]]; then
-#    source ~/.bashrc
+# ibus
+export XMODIFIERS=@im=ibus
+export GTK_IM_MODULE=ibus
+export QT_IM_MODULE=ibus
+
+if [[ -z "$DISPLAY" ]] && [[ "$XDG_VTNR" == "1" ]]; then
+    startx -- vt$((XDG_VTNR+6))
 fi

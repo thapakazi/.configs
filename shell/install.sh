@@ -1,25 +1,20 @@
 #!/bin/bash
 
-list="zshrc bashrc shellrc shellrc.d"
-
-for item in $list; do
-    ( file ~/.$item | grep -v "symbolic" ) || continue
-    echo $item starting..
-    if [[ -e ~/.$item ]]; then
-	    name="$item$(date +%s).bak"
-	    mv ~/.$item ~/$name
-	    echo "Old config has been renamed as $name"
-    fi
-    ln -s $PWD/$item ~/.$item
-done
-
-if [[ ! -e /tmp/git-prompt.sh && -e /usr/share/git/git-prompt.sh ]]; then
-    echo "Try running configure again"
+if [[ "$1" == "" ]]; then
+    COMMAND="ln -s"
 else
-    cp /tmp/git-prompt.sh /opt/
-    chmod +x /opt/git-prompt.sh
+    COMMAND="cp"
 fi
 
-PKG_REQ=(cowsay fortune)
-which apt-get && { which ${PKG_REQ[@]} || apt-get install ${PKG_REQ[@]} }
-which pacman && { which ${PKG_REQ[@]} || pacman -S ${PKG_REQ[@]} }
+list="bashrc bashrc.d bash_profile shellrc shellrc.d zshrc"
+
+rm -f installed
+for item in $list; do
+    echo "~/.$item" >> installed
+    if [[ -e ~/.$item ]]; then
+        name="$item$(date +%s).bak"
+        mv ~/.$item ~/$name
+        echo "Old config has been renamed as $name"
+    fi
+    $COMMAND $PWD/$item ~/.$item
+done

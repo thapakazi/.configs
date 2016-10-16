@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/Documents/oh-my-zsh
 
@@ -40,15 +42,21 @@ DISABLE_CORRECTION="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git colored-man command-not-found)
+plugins=(chucknorris git colored-man command-not-found docker zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
+set -k # INTERACTIVE_COMMENTS allow to add comments
+
 ## See man zshzle for bindkey
 ## Do cat<RET> to see any-new keybindings
-bindkey -s '^[[1;5A' '^Ucd ..^M' # M-up
-bindkey -s '^[[1;5B' '^Ucd -^M'  # M-down
+## Navigation bindings
+bindkey -s '^[[1;5A' '^Ucd ..^M' # C-up
+bindkey -s '^[[1;5B' '^Ucd -^M'  # C-down
+
+## Get last command output hackish edition
+bindkey -s '\ei' '$(!!)^M'
 
 source ~/.shellrc

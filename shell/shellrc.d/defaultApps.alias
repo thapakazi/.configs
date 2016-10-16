@@ -1,6 +1,0 @@
-#!/bin/bash
-
-export EDITOR="mg"
-export VISUAL="emacs -nw"
-export SCREEN="tmux"
-export BROWSER="firefox"
